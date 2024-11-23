@@ -42,13 +42,18 @@ model Address{
   contact Contact @relation(fields: [contactID], references: [contactID])
 }
 
+enum UserCategories{
+  KID
+  TEEN
+  ADULT
+}
+
 model Product{
   productID Int @id @default(autoincrement()) @unique
   nameProduct String
-  category Category[]
-  color Color[]
-  volume Volume[]
-  manufacture Manufacture[]
+  amount Int
+  price Int
+  listOfProducts ListOfProducts[]
 }
 
 model Category{
@@ -56,21 +61,13 @@ model Category{
   materialTypes String
   userCategory UserCategories @default(ADULT)
   culture String
-  productID Int
-  product Product @relation(fields: [productID], references: [productID])
-}
-
-enum UserCategories{
-  KID
-  TEEN
-  ADULT
+  listOfProducts ListOfProducts[]
 }
 
 model Color{
   colorID Int @id @default(autoincrement())
   color String
-  productID Int
-  product Product @relation(fields: [productID], references: [productID])
+  listOfProducts ListOfProducts[]
 }
 
 model Volume{
@@ -78,14 +75,26 @@ model Volume{
   width Float
   height Float
   length Float
-  productID Int
-  product Product @relation(fields: [productID], references: [productID])
+  listOfProducts ListOfProducts[]
 }
 
 model Manufacture{
   manufactureID Int @id @default(autoincrement())
   manufacturer String
   description String
+  listOfProducts ListOfProducts[]
+}
+
+model ListOfProducts{
   productID Int
   product Product @relation(fields: [productID], references: [productID])
+  categoryID Int
+  category Category @relation(fields: [categoryID], references: [categoryID])
+  colorID Int
+  color Color @relation(fields: [colorID], references: [colorID])
+  volumeID Int
+  volume Volume @relation(fields: [volumeID], references: [volumeID])
+  manufactureID Int
+  manufacture Manufacture @relation(fields: [manufactureID], references: [manufactureID])
+  @@id([productID, categoryID, colorID, manufactureID,volumeID])
 }
