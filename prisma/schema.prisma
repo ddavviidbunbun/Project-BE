@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  userID Int @id @default(autoincrement()) @unique
+  username String @db.VarChar(100)
+  password String @db.VarChar(100)
+  contact Contact[]
+}
+
+model Contact{
+  contactID Int @id @default(autoincrement()) 
+  first_name String
+  last_name String
+  email String
+  phone String
+  userID Int
+  address Address[]
+  user User @relation(fields: [userID], references: [userID])
+}
+
+model Address{
+  addressID Int @id @default(autoincrement())
+  street String
+  city String
+  province String
+  country String
+  postal_code String
+  contactID Int
+  contact Contact @relation(fields: [contactID], references: [contactID])
+}
+
+model Product{
+  productID Int @id @default(autoincrement()) @unique
+  nameProduct String
+  category Category[]
+  color Color[]
+  volume Volume[]
+  manufacture Manufacture[]
+}
+
+model Category{
+  categoryID Int @id @default(autoincrement())
+  materialTypes String
+  userCategory UserCategories @default(ADULT)
+  culture String
+  productID Int
+  product Product @relation(fields: [productID], references: [productID])
+}
+
+enum UserCategories{
+  KID
+  TEEN
+  ADULT
+}
+
+model Color{
+  colorID Int @id @default(autoincrement())
+  color String
+  productID Int
+  product Product @relation(fields: [productID], references: [productID])
+}
+
+model Volume{
+  volumeID Int @id @default(autoincrement())
+  width Float
+  height Float
+  length Float
+  productID Int
+  product Product @relation(fields: [productID], references: [productID])
+}
+
+model Manufacture{
+  manufactureID Int @id @default(autoincrement())
+  manufacturer String
+  description String
+  productID Int
+  product Product @relation(fields: [productID], references: [productID])
+}
